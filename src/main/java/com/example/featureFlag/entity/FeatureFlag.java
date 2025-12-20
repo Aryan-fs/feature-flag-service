@@ -1,5 +1,6 @@
 package com.example.featureFlag.entity;
 
+import com.example.featureFlag.common.Environment;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -26,7 +27,7 @@ public class FeatureFlag {
     private Boolean enabled;
 
     @Column(nullable = false)
-    private String environment;
+    private Environment environment;
 
     @CreationTimestamp
     private Timestamp createdAt;

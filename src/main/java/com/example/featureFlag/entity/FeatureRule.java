@@ -40,9 +40,3 @@ public class FeatureRule {
     @UpdateTimestamp
     Timestamp updatedAt;
 }
-
-enum RuleType {
-    USER_ID,
-    PERCENTAGE,
-    ENVIRONMENT,
-}
