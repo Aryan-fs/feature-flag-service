@@ -7,8 +7,6 @@ import com.example.featureFlag.entity.FeatureRule;
 import com.example.featureFlag.repository.FeatureFlagRepository;
 import com.example.featureFlag.repository.FeatureRuleRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
 import java.util.List;
 
 @Service
