@@ -6,8 +6,12 @@ import com.example.featureFlag.entity.FeatureFlag;
 import com.example.featureFlag.entity.FeatureRule;
 import com.example.featureFlag.repository.FeatureFlagRepository;
 import com.example.featureFlag.repository.FeatureRuleRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class EvaluationServiceImpl implements EvaluationService {
@@ -21,6 +25,11 @@ public class EvaluationServiceImpl implements EvaluationService {
     }
 
     @Override
+    @Cacheable(
+            cacheNames = "feature-evaluations",
+            key = "#flagKey + '|' + #context.environment + '|' + (#context.variables['userId'] ?: '__anonymous__')",
+            unless = "#result == null"
+    )
     public EvaluationResult evaluate(String flagKey, EvaluationContext context) {
         EvaluationResult evaluationResult = new EvaluationResult();
         FeatureFlag featureFlag = featureFlagRepository.findByKeyAndEnvironment(flagKey, context.getEnvironment());
@@ -31,10 +40,11 @@ public class EvaluationServiceImpl implements EvaluationService {
         }
 
         List<FeatureRule> featureRules = featureRuleRepository.findByFeatureFlagIdAndEnabledTrueOrderByPriorityAsc(featureFlag.getId());
+        Map<String, ?> variables = (context.getVariables() != null)?context.getVariables():Map.of();
         for(FeatureRule featureRule : featureRules) {
             String userId = null;
-            if(context.getVariables().get("userId") != null) {
-                userId = (String) context.getVariables().get("userId");
+            if(variables.get("userId") != null) {
+                userId = (String) variables.get("userId");
             }
             switch (featureRule.getRuleType()) {
                 case USER_ID:
