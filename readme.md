@@ -81,6 +81,8 @@ Rule updates may take up to 60 seconds to reflect, in exchange for reduced load 
 }
 ```
 
+---
+
 ### Create Feature Flag (Admin)
 **POST** `/api/admin/flags`
 ```json
@@ -91,6 +93,8 @@ Rule updates may take up to 60 seconds to reflect, in exchange for reduced load 
   "description": "New dashboard UI"
 }
 ```
+
+---
 
 ### Create Feature Rule (Admin)
 **POST** `/api/admin/rules`
@@ -105,47 +109,42 @@ Rule updates may take up to 60 seconds to reflect, in exchange for reduced load 
 }
 ```
 
+---
+
 ## 🧪 Testing
 
 **Unit tests covered:**
 
 - Flag not found
-
 - Disabled flags
-
 - Rule priority handling
-
 - User ID rules
-
 - Percentage rollout
-
 - Invalid rule validation
 
 Mockito is used to isolate service-layer logic.
 
+---
+
 ## 🧠 Design Decisions
 
 - Service layer handles business logic, controllers remain thin
-
 - Database constraints are preferred over pre-checks where possible
-
 - TTL caching chosen over explicit invalidation to reduce complexity
-
 - Cache is ephemeral and rebuilt after restart
-
 - Evaluation logic is deterministic ensuring no random flag flip
+
+---
 
 ## 📌 Future Improvements
 
 - Distributed cache (Redis) for multi-instance deployments
-
 - Rule audit history
-
 - Async cache warming
-
 - Admin UI
-
 - Feature flag dependency graphs
+
+---
 
 ## 👤 Author
 
