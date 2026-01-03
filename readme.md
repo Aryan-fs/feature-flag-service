@@ -136,6 +136,71 @@ Mockito is used to isolate service-layer logic.
 
 ---
 
+## 🏗️ Architecture & Flow
+
+The system is designed as a lightweight feature flag evaluation engine with deterministic behavior and low latency.
+
+### High-Level Components
+
+- **Controller Layer**
+    - Exposes REST APIs for evaluation and admin operations
+    - Keeps request handling thin and delegates logic to services
+
+- **Service Layer**
+    - Core business logic lives here
+    - Handles rule evaluation, priority ordering, validation, and caching
+    - Designed to be deterministic
+
+- **Repository Layer**
+    - JPA repositories for FeatureFlag and FeatureRule
+    - Relies on database constraints for data integrity
+
+- **Cache Layer**
+    - Caffeine-based in-memory cache
+    - TTL-based eviction to avoid complex invalidation logic
+
+---
+
+### Evaluation Flow
+
+1. Client calls `/api/evaluate`
+2. Cache is checked using key:
+
+   flagKey | environment | userId
+3. If cache hit → return cached result
+4. If cache miss:
+- Fetch feature flag
+- Validate flag status
+- Fetch enabled rules ordered by priority
+- Evaluate rules sequentially
+5. First matching rule determines the result
+6. Successful evaluations are cached with TTL
+
+---
+
+### Rule Evaluation Strategy
+
+Rules are evaluated in ascending priority order:
+
+1. **USER_ID**
+- Explicit allow-list for specific users
+2. **PERCENTAGE**
+- Deterministic hashing using `(flagKey + userId)`
+- Ensures consistent rollout per user
+3. **ENVIRONMENT**
+- Enables flag for entire environments
+
+---
+
+### Caching Strategy
+
+- Only successful evaluations are cached
+- TTL: 60 seconds
+- No explicit invalidation
+- Cache rebuilds naturally after restart
+
+This design favors simplicity and predictability while remaining performant.
+
 ## 📌 Future Improvements
 
 - Distributed cache (Redis) for multi-instance deployments
