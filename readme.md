@@ -201,6 +201,8 @@ Rules are evaluated in ascending priority order:
 
 This design favors simplicity and predictability while remaining performant.
 
+---
+
 ## 📌 Future Improvements
 
 - Distributed cache (Redis) for multi-instance deployments
