@@ -9,6 +9,7 @@ import com.example.featureFlag.repository.FeatureRuleRepository;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.io.Console;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
